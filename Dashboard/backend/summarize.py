@@ -9,11 +9,11 @@ import faiss
 from sentence_transformers import SentenceTransformer
 from groq import Groq
 
-embed_model = SentenceTransformer("all-MiniLM-L6-v2")  # offline embeddings
+embed_model = SentenceTransformer("all-MiniLM-L6-v2") 
 groq_client = Groq(api_key="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")
 llm_model = "llama-3.1-8b-instant"
 
-folder_path = "./docs"  # folder with PDFs and DOCXs
+folder_path = "./docs" 
 file_names = [f for f in os.listdir(folder_path) if f.endswith(('.pdf', '.docx'))]
 chunks = []
 
