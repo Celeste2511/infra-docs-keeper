@@ -20,14 +20,16 @@ Uses FAISS + embeddings for better context understanding
 How to Run
 1. Backend
 
-Go into the backend folder:
-
-cd backend
-
 
 Install the requirements:
 
 pip install -r requirements.txt
+
+
+Go into the backend folder:
+
+cd backend
+
 
 
 Add your Groq API key as an environment variable:
@@ -54,10 +56,6 @@ Open a new terminal and go to:
 
 cd frontend
 
-
-Install requirements:
-
-pip install -r requirements.txt
 
 
 Start the frontend:
