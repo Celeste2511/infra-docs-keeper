@@ -1,11 +1,6 @@
-# -----------------------------
-# 0️⃣ Install required packages if not already
-# -----------------------------
+
 # !pip install faiss-cpu PyPDF2 python-docx sentence-transformers groq torch
 
-# -----------------------------
-# 1️⃣ Imports
-# -----------------------------
 import os
 import numpy as np
 from PyPDF2 import PdfReader
@@ -14,16 +9,10 @@ import faiss
 from sentence_transformers import SentenceTransformer
 from groq import Groq
 
-# -----------------------------
-# 2️⃣ Initialize embedding model & Groq LLM
-# -----------------------------
 embed_model = SentenceTransformer("all-MiniLM-L6-v2")  # offline embeddings
 groq_client = Groq(api_key="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")
 llm_model = "llama-3.1-8b-instant"
 
-# -----------------------------
-# 3️⃣ Load files & split into chunks
-# -----------------------------
 folder_path = "./docs"  # folder with PDFs and DOCXs
 file_names = [f for f in os.listdir(folder_path) if f.endswith(('.pdf', '.docx'))]
 chunks = []
@@ -40,32 +29,22 @@ for f in file_names:
         for para in doc.paragraphs:
             text += para.text + "\n"
     
-    # Split into 500-character chunks
     text_chunks = [text[i:i+500] for i in range(0, len(text), 500)]
     chunks.extend(text_chunks)
 
 print(f"✅ Loaded {len(chunks)} chunks from {len(file_names)} files.")
 
-# -----------------------------
-# 4️⃣ Build embeddings & FAISS index
-# -----------------------------
 vectors = np.vstack([embed_model.encode(c) for c in chunks]).astype('float32')
 index = faiss.IndexFlatL2(vectors.shape[1])
 index.add(vectors)
 print(f"✅ FAISS index ready with {len(chunks)} vectors.")
 
-# -----------------------------
-# 5️⃣ Retrieval function
-# -----------------------------
 k_retrieve = 3
 def retrieve(query, k=k_retrieve):
     q_vec = embed_model.encode(query).reshape(1, -1).astype('float32')
     D, I = index.search(q_vec, k)
     return [chunks[i] for i in I[0]]
 
-# -----------------------------
-# 6️⃣ Query Groq LLM using context
-# -----------------------------
 def ask_groq(query):
     context = "\n\n".join(retrieve(query))
     prompt = f"Use the following context to answer the question:\n{context}\n\nQuestion: {query}"
@@ -76,8 +55,5 @@ def ask_groq(query):
     )
     return chat.choices[0].message.content
 
-# -----------------------------
-# 7️⃣ Example query
-# -----------------------------
 response = ask_groq("What is the document about?")
 print("\n📝 LLM Response:\n", response)
