@@ -1,1 +1,10 @@
-
+Flask
+PyPDF2
+python-docx
+sentence-transformers
+faiss-cpu
+numpy
+groq
+torch
+streamlit
+requests
